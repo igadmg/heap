@@ -14,7 +14,9 @@ for use as a priority queue.
 * It uses generics.
 * Unlike other generic Go heaps that I've seen, the ordering function is
   obtained from an interface implementation rather than a constructor argument.
-  This has advantages and disadvantages. Advantages:
+  This has advantages and disadvantages.
+
+  Advantages:
     - A heap of Ts always uses the 'correct' ordering function for T.
     - Empty heaps consime only the space required by a `nil` slice (as it's not
       necessary to store the ordering function as a field).
