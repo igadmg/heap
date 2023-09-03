@@ -21,7 +21,7 @@ https://pkg.go.dev/github.com/addrummond/heap
   This has advantages and disadvantages.
 
   Advantages:
-    - A heap of Ts always uses the 'correct' ordering function for T.
+    - All heaps of Ts are guaranteed to use the same ordering function.
     - Empty heaps consume only the space required by a `nil` slice (as it's not
       necessary to store the ordering function as a field of the `Heap` struct).
 
