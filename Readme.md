@@ -1,7 +1,7 @@
 # Heap
 
-A generic implementation of min and max heaps in Go with an interface suitable
-for use as a priority queue.
+A generic implementation of min and max binary heaps in Go with an interface
+suitable for use as a priority queue.
 
 * Use with types that satisfy `constraints.Comparable`, or define a
   `Cmp` method for your type.
