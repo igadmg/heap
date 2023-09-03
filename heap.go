@@ -66,7 +66,7 @@ func (Max) mul() int {
 	return -1
 }
 
-// If your type doesn't satisfy constraints.Comparable, define a Cmp method with
+// If your type doesn't satisfy constraints.Ordered, define a Cmp method with
 // a pointer receiver for your type. This method should return 0 if the two
 // values compare equal, an int < 0 if the first value is less than the second,
 // and an int > 0 otherwise.
@@ -99,7 +99,7 @@ func Len[T any, MOM MinOrMax](heap *Heap[T, MOM]) int {
 	return len(heap.sl)
 }
 
-// Push adds an element to the heap for a T that satisfies comparable.Ordered.
+// Push adds an element to the heap for a T that satisfies constraints.Ordered.
 func Push[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], elem T) {
 	push(heap, elem, getCmp(&heap.sl))
 }
@@ -117,7 +117,7 @@ func push[T any, MOM MinOrMax](heap *Heap[T, MOM], elem T, cmp func(i, j int) in
 }
 
 // Pop removes the min/max element from the heap for a T that satisfies
-// comparable.Ordered.
+// constraints.Ordered.
 func Pop[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM]) (T, bool) {
 	return pop(heap, getCmp(&heap.sl))
 }
