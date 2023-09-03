@@ -11,18 +11,45 @@ for use as a priority queue.
 
 ## What makes this heap implementation different?
 
-1. It uses generics.
-
-2. Unlike other generic Go heaps that I've seen, the ordering function is
+* It uses generics.
+* Unlike other generic Go heaps that I've seen, the ordering function is
   obtained from an interface implementation rather than a constructor argument.
-  This has advantages and disadvantages. The main advantage is to guarantee
-  that a heap of Ts always uses the 'correct' ordering function for T. The main
-  disadvantages are (i) more complex types (though you don't really have to
-  think about these as a consumer of the library) and (ii) the need to define
-  dummy wrapper types if you want to use different ordering functions for the
-  same underlying type.
+  This has advantages and disadvantages. Advantages:
+    - A heap of Ts always uses the 'correct' ordering function for T.
+    - Empty heaps consime only the space required by a `nil` slice (as it's not
+      necessary to store the ordering function as a field).
+  Disadvantages:
+    - The types are more complex (though you don't really have to
+      think about these as a consumer of the library).
+    - You need to define dummy wrapper types if you want different heaps to use
+      different ordering functions for the same underlying type.
 
-## Example
+## Example with a built-in type that can be compared using <
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/addrummond/heap"
+)
+
+func main() {
+	var h heap.Heap[int, heap.Max]
+
+	heap.Push(&h, 5)
+	heap.Push(&h, 10)
+	heap.Push(&h, 1)
+
+	maxVal, ok := heap.Pop(&h)
+	// ok == true
+	// maxVal == 10
+	fmt.Printf("%v: %+v\n", ok, maxVal)
+}
+```
+
+## Example with a custom data type
 
 ```go
 package main
