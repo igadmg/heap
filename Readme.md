@@ -7,7 +7,7 @@ for use as a priority queue.
   `Cmp` method for your type.
 * Choose min or max heap property via a type parameter.
 * Extensive tests (including fuzz tests).
-* Benchmarks confirm expected O(1) amortized push and O(log n) pop.
+* Benchmarks confirm O(1) push and O(log n) pop.
 
 ## Example
 
