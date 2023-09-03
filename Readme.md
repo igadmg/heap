@@ -13,10 +13,10 @@ for use as a priority queue.
 
 1. It uses generics.
 
-2. Unlike in other generic Go heaps that I've seen, the ordering function is
+2. Unlike other generic Go heaps that I've seen, the ordering function is
   obtained from an interface implementation rather than a constructor argument.
-  This has advantages and disadvantages. The main advantage is to ensure that a
-  heap of Ts always uses the 'correct' ordering function for T. The main
+  This has advantages and disadvantages. The main advantage is to guarantee
+  that a heap of Ts always uses the 'correct' ordering function for T. The main
   disadvantages are (i) more complex types (though you don't really have to
   think about these as a consumer of the library) and (ii) the need to define
   dummy wrapper types if you want to use different ordering functions for the
