@@ -18,6 +18,7 @@ for use as a priority queue.
     - A heap of Ts always uses the 'correct' ordering function for T.
     - Empty heaps consime only the space required by a `nil` slice (as it's not
       necessary to store the ordering function as a field).
+
   Disadvantages:
     - The types are more complex (though you don't really have to
       think about these as a consumer of the library).
