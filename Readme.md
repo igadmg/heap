@@ -18,7 +18,7 @@ for use as a priority queue.
 
   Advantages:
     - A heap of Ts always uses the 'correct' ordering function for T.
-    - Empty heaps consime only the space required by a `nil` slice (as it's not
+    - Empty heaps consume only the space required by a `nil` slice (as it's not
       necessary to store the ordering function as a field).
 
   Disadvantages:
