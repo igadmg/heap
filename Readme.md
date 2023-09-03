@@ -9,6 +9,19 @@ for use as a priority queue.
 * Extensive tests (including fuzz tests).
 * Benchmarks confirm O(1) push and O(log n) pop.
 
+## What makes this heap implementation different?
+
+1. It uses generics.
+
+2. Unlike in other generic Go heaps that I've seen, the ordering function is
+  obtained from an interface implementation rather than a constructor argument.
+  This has advantages and disadvantages. The main advantage is to ensure that a
+  heap of Ts always uses the 'correct' ordering function for T. The main
+  disadvantages are (i) more complex types (though you don't really have to
+  think about these as a consumer of the library) and (ii) the need to define
+  dummy wrapper types if you want to use different ordering functions for the
+  same underlying type.
+
 ## Example
 
 ```go
