@@ -3,7 +3,7 @@
 A generic implementation of min and max heaps in Go with an interface suitable
 for use as a priority queue.
 
-* Use with types that satisfy `constraints.Compatable`, or define a
+* Use with types that satisfy `constraints.Comparable`, or define a
   `Cmp` method for your type.
 * Choose min or max heap property via a type parameter.
 * Extensive tests (including fuzz tests).
