@@ -20,6 +20,7 @@
 //
 //     var heap heap.Heap[myCustomType, heap.Min]
 //     heap.PushOrderable(&heap, myCustomType{Key: 1, Foo: "foo"})
+//     heap.PopOrderable(&heap)
 //
 //     type myCustomType struct {
 //       Key int
