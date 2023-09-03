@@ -59,4 +59,4 @@ func main() {
 
 ## Docs
 
-https://pkg.go.dev/github.com/addrummond/heap@v0.0.1#Filter
+https://pkg.go.dev/github.com/addrummond/heap
