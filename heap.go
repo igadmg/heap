@@ -2,9 +2,6 @@
 // priority queue. The backing data structure is a slice denoting an implicit
 // binary heap. The default value of Heap is a valid empty heap.
 //
-//     var myMinStringHeap heap.Heap[string, heap.Min]
-//     var myMaxIntHeap heap.Heap[int, heap.Max]
-//
 // The heap grows in the usual way by appending elements to the backing slice
 // and then making adjustments to preserve the heap property. As the heap
 // shrinks, smaller backing slices are periodically allocated and elements
@@ -118,13 +115,13 @@ func push[T any, MOM MinOrMax](heap *Heap[T, MOM], elem T, cmp func(i, j int) in
 	bubble(heap, len(heap.sl)-1, cmp)
 }
 
-// Pop removes the least/greatest element from the heap for a T that satisfies
+// Pop removes the min/max element from the heap for a T that satisfies
 // comparable.Ordered.
 func Pop[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM]) (T, bool) {
 	return pop(heap, getCmp(&heap.sl))
 }
 
-// Pop removes the least/greatest element from the heap for a T that implements
+// Pop removes the min/max element from the heap for a T that implements
 // Orderable.
 func PopOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM]) (T, bool) {
 	return pop(heap, func(i, j int) int {
