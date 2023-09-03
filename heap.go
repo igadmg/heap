@@ -101,7 +101,7 @@ func Len[T any, MOM MinOrMax](heap *Heap[T, MOM]) int {
 
 // Push adds an element to the heap for a T that satisfies constraints.Ordered.
 func Push[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], elem T) {
-	push(heap, elem, getCmp(&heap.sl))
+	push(heap, elem, func(i, j int) int { return cmpOrdered(heap.sl[i], heap.sl[j]) })
 }
 
 // PushOrderable adds an element to the heap for a T that implements Orderable.
@@ -119,7 +119,7 @@ func push[T any, MOM MinOrMax](heap *Heap[T, MOM], elem T, cmp func(i, j int) in
 // Pop removes the min/max element from the heap for a T that satisfies
 // constraints.Ordered.
 func Pop[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM]) (T, bool) {
-	return pop(heap, getCmp(&heap.sl))
+	return pop(heap, func(i, j int) int { return cmpOrdered(heap.sl[i], heap.sl[j]) })
 }
 
 // Pop removes the min/max element from the heap for a T that implements
@@ -193,7 +193,7 @@ const (
 // element is removed from the heap. If the second return value of f is Break
 // then the iteration stops without visiting any subsequent items.
 func Filter[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (keepElement bool, breakOrContinue BreakOrContinue)) {
-	filter(heap, f, getCmp(&heap.sl))
+	filter(heap, f, func(i, j int) int { return cmpOrdered(heap.sl[i], heap.sl[j]) })
 }
 
 // As for Filter, but for the case where T cannot be compared using < and there
@@ -273,16 +273,14 @@ func bubble[T any, MOM MinOrMax](heap *Heap[T, MOM], i int, cmp func(i, j int) i
 	}
 }
 
-func getCmp[T c.Ordered](sl *[]T) func(int, int) int {
-	return func(i, j int) int {
-		if (*sl)[i] < (*sl)[j] {
-			return -1
-		} else if (*sl)[i] > (*sl)[j] {
-			return 1
-		} else {
-			return 0
-		}
+func cmpOrdered[T c.Ordered](a, b T) int {
+	if a < b {
+		return -1
 	}
+	if a > b {
+		return 1
+	}
+	return 0
 }
 
 func parentIndex(i int) int {
