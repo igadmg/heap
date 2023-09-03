@@ -56,3 +56,7 @@ func main() {
 	fmt.Printf("%v: %+v\n", ok, maxPriorityTask)
 }
 ```
+
+## Docs
+
+https://pkg.go.dev/github.com/addrummond/heap@v0.0.1#Filter
