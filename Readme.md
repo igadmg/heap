@@ -9,6 +9,10 @@ for use as a priority queue.
 * Extensive tests (including fuzz tests).
 * Benchmarks confirm O(1) push and O(log n) pop.
 
+## Docs
+
+https://pkg.go.dev/github.com/addrummond/heap
+
 ## What makes this heap implementation different?
 
 * It uses generics.
@@ -99,7 +103,3 @@ func main() {
 	fmt.Printf("%v: %+v\n", ok, maxPriorityTask)
 }
 ```
-
-## Docs
-
-https://pkg.go.dev/github.com/addrummond/heap
