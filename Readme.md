@@ -99,7 +99,7 @@ func main() {
 
 	maxPriorityTask, ok := heap.PopOrderable(&h)
 	// ok == true
-	// maxPriorityTask == Task{Priority: 10, Payload:  "A priority 10 task"}
+	// maxPriorityTask == Task{Priority: 10, Payload: "A priority 10 task"}
 	fmt.Printf("%v: %+v\n", ok, maxPriorityTask)
 }
 ```
