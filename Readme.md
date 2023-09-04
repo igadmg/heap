@@ -1,5 +1,13 @@
 # Heap
 
+<a href="https://godoc.org/github.com/addrummond/heap">
+<img src="https://godoc.org/github.com/addrummond/heap?status.svg" alt="GoDoc">
+</a>
+
+<a href="https://opensource.org/licenses/MIT" rel="nofollow">
+<img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="License"/>
+</a>
+
 A generic implementation of min and max binary heaps in Go with an interface
 suitable for use as a priority queue.
 
@@ -8,10 +16,6 @@ suitable for use as a priority queue.
 * Choose min or max heap property via a type parameter.
 * Extensive tests (including fuzz tests).
 * Benchmarks confirm O(1) push and O(log n) pop.
-
-## Docs
-
-https://pkg.go.dev/github.com/addrummond/heap
 
 ## What makes this heap implementation different?
 
