@@ -120,3 +120,63 @@ func naiveHeapPop(heap *[]int) (v int, ok bool) {
 	*heap = (*heap)[1:]
 	return
 }
+
+func naiveHeapFilter(heap *[]int, f func(*int) (keepElement bool, breakOrContinue BreakOrContinue)) {
+	newHeap := make([]int, 0)
+	for i, elem := range *heap {
+		keep, boc := f(&(*heap)[i])
+		if keep {
+			newHeap = append(newHeap, elem)
+		}
+		if boc == Break {
+			break
+		}
+	}
+	*heap = newHeap
+}
+
+func slicesHaveSameElems(sl1 []int, sl2 []int) bool {
+	counts1 := make(map[int]int)
+	counts2 := make(map[int]int)
+	for _, elem := range sl1 {
+		counts1[elem]++
+	}
+	for _, elem := range sl2 {
+		counts2[elem]++
+	}
+	for i, n := range counts1 {
+		if n2, ok := counts2[i]; !ok || n2 != n {
+			return false
+		}
+	}
+	for i, n := range counts2 {
+		if n2, ok := counts1[i]; !ok || n2 != n {
+			return false
+		}
+	}
+	return true
+}
+
+func checkMinHeapProperty(heap *Heap[int, Min], i int) bool {
+	if i >= len(heap.sl) {
+		return true
+	}
+	lci := leftChildIndex(i)
+	rci := rightChildIndex(i)
+	if (lci < len(heap.sl) && heap.sl[lci] < heap.sl[i]) || (rci < len(heap.sl) && heap.sl[rci] < heap.sl[i]) {
+		return false
+	}
+	return checkMinHeapProperty(heap, lci) && checkMinHeapProperty(heap, rci)
+}
+
+func checkMaxHeapProperty(heap *Heap[int, Max], i int) bool {
+	if i >= len(heap.sl) {
+		return true
+	}
+	lci := leftChildIndex(i)
+	rci := rightChildIndex(i)
+	if (lci < len(heap.sl) && heap.sl[lci] > heap.sl[i]) || (rci < len(heap.sl) && heap.sl[rci] > heap.sl[i]) {
+		return false
+	}
+	return checkMaxHeapProperty(heap, lci) && checkMaxHeapProperty(heap, rci)
+}

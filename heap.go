@@ -205,18 +205,30 @@ func FilterOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM], f
 }
 
 func filter[T any, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (bool, BreakOrContinue), cmp func(int, int) int) {
-	for i := 0; i < len(heap.sl); i++ {
-		elem := &heap.sl[i]
-		keep, boc := f(elem)
-		if !keep {
-			if i < len(heap.sl) {
-				heap.sl[i] = heap.sl[len(heap.sl)-1]
-				bubble(heap, i, cmp)
+	i := 0
+	first := -1
+	for j := 0; j < len(heap.sl); j++ {
+		keep, boc := f(&heap.sl[j])
+		if keep {
+			heap.sl[i] = heap.sl[j]
+			if first == -1 {
+				first = i
 			}
-			heap.sl = heap.sl[:len(heap.sl)-1]
+			i++
 		}
 		if boc == Break {
 			break
+		}
+	}
+
+	heap.sl = heap.sl[:i]
+
+	if first != -1 {
+		heap.sl = heap.sl[:first]
+		for j := first; j < i; j++ {
+			// x[i] is valid only if i < len(x), but x[i:i+1] is valid if i < cap(x),
+			// so we can use this syntax to index elements outside the slice's length
+			push(heap, heap.sl[j : j+1][0], cmp)
 		}
 	}
 }
