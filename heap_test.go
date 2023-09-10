@@ -419,6 +419,34 @@ func TestFilter9(t *testing.T) {
 	}
 }
 
+func TestFilterCompaction(t *testing.T) {
+	elems := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	var heap Heap[int, Min]
+	for _, elem := range elems {
+		Push(&heap, elem)
+	}
+	Filter(&heap, func(elem *int) (bool, BreakOrContinue) {
+		return *elem < 3, Continue
+	})
+	if cap(heap.sl) > len(heap.sl)*2 {
+		t.Errorf("Heap not compact: %v %v\n", len(heap.sl), cap(heap.sl))
+	}
+}
+
+func TestFilterCompactionToEmpty(t *testing.T) {
+	elems := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	var heap Heap[int, Min]
+	for _, elem := range elems {
+		Push(&heap, elem)
+	}
+	Filter(&heap, func(elem *int) (bool, BreakOrContinue) {
+		return false, Continue
+	})
+	if heap.sl != nil {
+		t.Errorf("Expected heap slice to be nil: %+v\n", heap.sl)
+	}
+}
+
 type myCustomType struct {
 	Key     int
 	Content string
