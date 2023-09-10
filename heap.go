@@ -231,6 +231,8 @@ func filter[T any, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (bool, BreakOrCo
 			push(heap, heap.sl[j : j+1][0], cmp)
 		}
 	}
+
+	compact(heap.sl)
 }
 
 func shrink[T any](a []T) []T {
@@ -240,6 +242,10 @@ func shrink[T any](a []T) []T {
 		return nil
 	}
 	a = a[0 : len(a)-1]
+	return compact(a)
+}
+
+func compact[T any](a []T) []T {
 	if cap(a)/2 >= len(a) {
 		na := make([]T, len(a))
 		copy(na, a)
