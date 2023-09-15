@@ -25,6 +25,7 @@ suitable for use as a priority queue.
   This has advantages and disadvantages.
 
   Advantages:
+    - Default values are valid (empty) heaps.
     - All heaps of Ts are guaranteed to use the same ordering function.
     - Empty heaps consume only the space required by a `nil` slice (as it's not
       necessary to store the ordering function as a field of the `Heap` struct).
