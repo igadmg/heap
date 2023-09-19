@@ -235,6 +235,79 @@ func filter[T any, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (bool, BreakOrCo
 	heap.sl = compact(heap.sl)
 }
 
+// FromSlice initializes the a heap from the elements of a slice using Floyd's
+// heap-building algorithm. The previous contetns of the heap (if any) are
+// discarded. The slice is 'moved' into the Heap and should not be accessed or
+// modified following a call to this function.
+func FromSlice[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], slice []T) {
+	fromSlice(heap, slice, func(i, j int) int {
+		return cmpOrdered(heap.sl[i], heap.sl[j])
+	})
+}
+
+// As for FromSlice, but for the case where T cannot be compared using < and
+// there is an implementation of Orderable[T].
+func FromSliceOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM], slice []T) {
+	fromSlice(heap, slice, func(i, j int) int {
+		return PT(&heap.sl[i]).Cmp(&heap.sl[j])
+	})
+}
+
+func fromSlice[T any, MOM MinOrMax](heap *Heap[T, MOM], slice []T, cmp func(int, int) int) {
+	var mom MOM
+
+	// ensure that there's no associated heap allocation if the heap is empty
+	if len(slice) == 0 {
+		heap.sl = nil
+		return
+	}
+
+	// doing this check for the one element case lets us remove a check inside the
+	// loop that would otherwise be required
+	if len(slice) == 1 {
+		heap.sl = slice
+		return
+	}
+
+	heap.sl = slice
+	start := parentIndex(len(heap.sl) - 1)
+	for i := start; i >= 0; i-- {
+		// I would have liked to split the body of this loop out into a separate
+		// function, but unfortunately this makes it perform worse than repeated
+		// calls to Push for a typical unordered sequence of values. When the code
+		// below is inlined it seems to perform about the same on typical inputs,
+		// but considerably better in cases that are pathological for repeated calls
+		// to Push.
+
+		j := i
+		for {
+			lci := leftChildIndex(j)
+			rci := rightChildIndex(j)
+
+			if mom.mul()*cmp(lci, j) < 0 {
+				if rci < len(heap.sl) && mom.mul()*cmp(rci, lci) < 0 {
+					// right child is smallest (min heap)
+					heap.sl[j], heap.sl[rci] = heap.sl[rci], heap.sl[j]
+					j = rci
+				} else {
+					// left child is smallest (min heap)
+					heap.sl[j], heap.sl[lci] = heap.sl[lci], heap.sl[j]
+					j = lci
+				}
+			} else if rci < len(heap.sl) && mom.mul()*cmp(rci, j) < 0 {
+				heap.sl[j], heap.sl[rci] = heap.sl[rci], heap.sl[j]
+				j = rci
+			} else {
+				break
+			}
+
+			if j > start {
+				break
+			}
+		}
+	}
+}
+
 func shrink[T any](a []T) []T {
 	a = a[0 : len(a)-1]
 	return compact(a)

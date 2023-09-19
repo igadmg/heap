@@ -473,6 +473,174 @@ func TestCustomKeyTypes(t *testing.T) {
 	}
 }
 
+func TestFromSliceEmpty(t *testing.T) {
+	var heap Heap[int, Min]
+	FromSlice(&heap, []int{})
+	if heap.sl != nil {
+		t.Errorf("Expected heap to have nil slice, got %+v\n", heap.sl)
+	}
+}
+
+func TestFromSliceOneElem(t *testing.T) {
+	slice := []int{1}
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if len(heap.sl) != 1 || heap.sl[0] != 1 {
+		t.Errorf("Unexpected heap contents: %+v\n", heap.sl)
+	}
+}
+
+func TestFromSliceTwoElems(t *testing.T) {
+	slice := []int{2, 1}
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if !checkMinHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceThreeElems(t *testing.T) {
+	slice := []int{3, 2, 1}
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if !checkMinHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceFourElems(t *testing.T) {
+	slice := []int{3, 2, 4, 1}
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if !checkMinHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceMin(t *testing.T) {
+	slice := []int{1, 2, 6, 7, 3, 2, 4, 5, 6, 7, 9, 9, 10, -1, -3, -2, 15, 99, 100, 75}
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if !checkMinHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceMinSameElems(t *testing.T) {
+	slice := []int{1, 2, 6, 7, 3, 2, 4, 5, 6, 7, 9, 9, 10, -1, -3, -2, 15, 99, 100, 75}
+	cp := make([]int, len(slice))
+	copy(cp, slice)
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	if !checkMinHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+	if !slicesHaveSameElems(cp, slice) {
+		t.Errorf("Elems not the same")
+	}
+}
+
+func TestFromSliceMax(t *testing.T) {
+	slice := []int{1, 2, 6, 7, 3, 2, 4, 5, 6, 7, 9, 9, 10, -1, -3, -2, 15, 99, 100, 75}
+	var heap Heap[int, Max]
+	FromSlice(&heap, slice)
+	if !checkMaxHeapProperty(&heap, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceMaxSameElems(t *testing.T) {
+	slice := []int{1, 2, 6, 7, 3, 2, 4, 5, 6, 7, 9, 9, 10, -1, -3, -2, 15, 99, 100, 75}
+	cp := make([]int, len(slice))
+	copy(cp, slice)
+	var heap Heap[int, Max]
+	FromSlice(&heap, slice)
+	if !checkMaxHeapProperty(&heap, 0) {
+		t.Errorf("Max heap property violated")
+	}
+	if !slicesHaveSameElems(cp, slice) {
+		t.Errorf("Elems not the same")
+	}
+}
+
+type myOtherCustomType struct {
+	v int
+}
+
+func (a *myOtherCustomType) Cmp(b *myOtherCustomType) int {
+	return a.v - b.v
+}
+
+func TestFromSliceMinOrderable(t *testing.T) {
+	slice := []myOtherCustomType{{91}, {21}, {76}, {73}, {23}, {25}, {14}, {95}, {36}, {76}, {49}, {97}, {310}, {-11}, {-33}, {-12}, {155}, {979}, {190}, {175}}
+	var heap Heap[myOtherCustomType, Min]
+	FromSliceOrderable(&heap, slice)
+	ints := make([]int, len(slice))
+	for i := range heap.sl {
+		ints[i] = heap.sl[i].v
+	}
+	if !checkMinHeapProperty(&Heap[int, Min]{sl: ints}, 0) {
+		t.Errorf("Min heap property violated")
+	}
+}
+
+func TestFromSliceMaxOrderable(t *testing.T) {
+	slice := []myOtherCustomType{{19}, {12}, {67}, {37}, {32}, {52}, {41}, {59}, {63}, {67}, {94}, {79}, {13}, {-11}, {-33}, {-21}, {551}, {979}, {91}, {671}}
+	var heap Heap[myOtherCustomType, Max]
+	FromSliceOrderable(&heap, slice)
+	ints := make([]int, len(slice))
+	for i := range heap.sl {
+		ints[i] = heap.sl[i].v
+	}
+	if !checkMaxHeapProperty(&Heap[int, Max]{sl: ints}, 0) {
+		t.Errorf("Max heap property violated")
+	}
+}
+
+// Constructing a slice via sequential appends and then calling FromSlice to
+// convert the slice into a heap should be faster than pushing the same sequence
+// of elements onto an empty heap. (If it isn't then there's no point in
+// exposing a FromSlice function in the API.)
+func BenchmarkFromSlice(b *testing.B) {
+	var h Heap[int, Min]
+	var sl []int
+	for n := 0; n < b.N; n++ {
+		for i := 0; i < 10000; i++ {
+			sl = append(sl, int(i%100))
+		}
+	}
+	FromSlice(&h, sl)
+}
+
+func BenchmarkFromSlicePathological(b *testing.B) {
+	var h Heap[int, Min]
+	var sl []int
+	for n := 0; n < b.N; n++ {
+		for i := 0; i < 10000; i++ {
+			sl = append(sl, 10000-i)
+		}
+	}
+	FromSlice(&h, sl)
+}
+
+func BenchmarkFromSliceVsPushElemsInSequence(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		var h Heap[int, Min]
+		for i := 0; i < 10000; i++ {
+			Push(&h, int(i%100))
+		}
+	}
+}
+
+func BenchmarkFromSliceVsPushElemsInSequencePathological(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		var h Heap[int, Min]
+		for i := 0; i < 10000; i++ {
+			Push(&h, 10000-i)
+		}
+	}
+}
+
 // Fuzz tests a randomly generated sequence of operations against the same set
 // of operations performed on a sorted slice.
 func TestMinHeapFuzz(t *testing.T) {
@@ -564,6 +732,25 @@ func TestMaxHeapFuzz(t *testing.T) {
 
 		if !ok1 {
 			break
+		}
+	}
+}
+
+func TestFromSliceFuzz(t *testing.T) {
+	src := rand.NewSource(123)
+	slice := make([]int, 10000)
+	for i := 0; i < len(slice); i++ {
+		slice[i] = int(src.Int63())
+	}
+	sliceCp := make([]int, len(slice))
+	copy(sliceCp, slice)
+	sort.Ints(sliceCp)
+	var heap Heap[int, Min]
+	FromSlice(&heap, slice)
+	for i := 0; i < len(sliceCp); i++ {
+		v, ok := Pop(&heap)
+		if !ok || v != sliceCp[i] {
+			t.Errorf("Expected (%v,true), got (%v,%v)\n", sliceCp[i], ok, v)
 		}
 	}
 }
