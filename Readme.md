@@ -20,6 +20,8 @@ suitable for use as a priority queue.
 ## What makes this heap implementation different?
 
 * It uses generics.
+* Extensive tests and benchmarks confirming expected behavior and performance
+  characteristics.
 * Unlike other generic Go heaps that I've seen, the ordering function is
   obtained from an interface implementation rather than a constructor argument.
   This has advantages and disadvantages.
@@ -35,8 +37,6 @@ suitable for use as a priority queue.
       think about these as a consumer of the library).
     - You need to define dummy wrapper types if you want different heaps to use
       different ordering functions for the same underlying type.
-* Extensive tests and benchmarks confirming expected behavior and performance
-  characteristics.
 
 ## Example with a built-in type that can be compared using <
 
