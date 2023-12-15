@@ -79,7 +79,7 @@ func (Max) mul() int {
 //       Day   int
 //     }
 //
-//     func (m1 *Month) Cmp(m2 *Month) string {
+//     func (m1 *Month) Cmp(m2 *Month) int {
 //       if m1.Year != m2.Year {
 //         return m1.Year - m2.Year
 //       }
