@@ -236,7 +236,7 @@ func filter[T any, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (bool, BreakOrCo
 }
 
 // FromSlice initializes the a heap from the elements of a slice using Floyd's
-// heap-building algorithm. The previous contetns of the heap (if any) are
+// heap-building algorithm. The previous contents of the heap (if any) are
 // discarded. The slice is 'moved' into the Heap and should not be accessed or
 // modified following a call to this function.
 func FromSlice[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], slice []T) {
