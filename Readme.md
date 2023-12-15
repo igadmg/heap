@@ -19,24 +19,23 @@ suitable for use as a priority queue.
 
 ## What makes this heap implementation different?
 
-* It uses generics.
-* Extensive tests and benchmarks confirming expected behavior and performance
-  characteristics.
-* Unlike other generic Go heaps that I've seen, the ordering function is
-  obtained from an interface implementation rather than a constructor argument.
-  This has advantages and disadvantages.
+Unlike other generic Go heaps that I've seen, the ordering function is
+obtained from an interface implementation rather than a constructor argument.
+This has advantages and disadvantages.
 
-  Advantages:
-    - Default values are valid (empty) heaps.
-    - All heaps of Ts are guaranteed to use the same function to compare Ts.
-    - Empty heaps consume only the space required by a `nil` slice (as it's not
-      necessary to store the ordering function as a field of the `Heap` struct).
+Advantages:
 
-  Disadvantages:
-    - The types are more complex (though you don't really have to
-      think about these as a consumer of the library).
-    - You need to define dummy wrapper types if you want different heaps to use
-      different ordering functions for the same underlying type.
+* Default values are valid (empty) heaps.
+* All heaps of Ts are guaranteed to use the same function to compare Ts.
+* Empty heaps consume only the space required by a `nil` slice (as it's not
+  necessary to store the ordering function as a field of the `Heap` struct).
+
+Disadvantages:
+
+* The types are more complex (though you don't really have to
+  think about these as a consumer of the library).
+* You need to define dummy wrapper types if you want different heaps to use
+  different ordering functions for the same underlying type.
 
 ## Example with a built-in type that can be compared using <
 
