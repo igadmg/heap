@@ -1,8 +1,8 @@
-module github.com/addrummond/heap
+module github.com/igadmg/heap
 
-go 1.18
+go 1.22
 
 require (
-	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
+	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
 )

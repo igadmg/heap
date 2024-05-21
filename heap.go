@@ -10,26 +10,26 @@
 // If your type can be compared using the < operator then you can use the Push
 // and Pop functions to manipulate the heap, e.g.:
 //
-//     var myMaxIntHeap heap.Heap[int, heap.Max]
-//     heap.Push(&myMaxIntHeap, 17)
-//     heap.Pop(&myMaxIntHeap)
+//	var myMaxIntHeap heap.Heap[int, heap.Max]
+//	heap.Push(&myMaxIntHeap, 17)
+//	heap.Pop(&myMaxIntHeap)
 //
 // If your type can't be compared using < then you can implement the Cmp method
 // of the Orderable interface for your type (with a pointer receiver) and use
 // the PushOrderable and PopOrderable functions:
 //
-//     var heap heap.Heap[myCustomType, heap.Min]
-//     heap.PushOrderable(&heap, myCustomType{Key: 1, Foo: "foo"})
-//     heap.PopOrderable(&heap)
+//	var heap heap.Heap[myCustomType, heap.Min]
+//	heap.PushOrderable(&heap, myCustomType{Key: 1, Foo: "foo"})
+//	heap.PopOrderable(&heap)
 //
-//     type myCustomType struct {
-//       Key int
-//       Foo string
-//     }
+//	type myCustomType struct {
+//	  Key int
+//	  Foo string
+//	}
 //
-//     func (a *myCustomType) Cmp(b *myCustomType) int {
-//       return x.Key - y.Key
-//     }
+//	func (a *myCustomType) Cmp(b *myCustomType) int {
+//	  return x.Key - y.Key
+//	}
 package heap
 
 import (
@@ -73,25 +73,24 @@ func (Max) mul() int {
 //
 // Example:
 //
-//     type Date struct {
-//       Year  int
-//       Month int
-//       Day   int
-//     }
+//	type Date struct {
+//	  Year  int
+//	  Month int
+//	  Day   int
+//	}
 //
-//     func (m1 *Month) Cmp(m2 *Month) int {
-//       if m1.Year != m2.Year {
-//         return m1.Year - m2.Year
-//       }
-//       if m1.Month != m2.Month {
-//         return m1.Month - m2.Month
-//       }
-//       return m1.Day - m2.Day
-//     }
-//
+//	func (m1 *Month) Cmp(m2 *Month) int {
+//	  if m1.Year != m2.Year {
+//	    return m1.Year - m2.Year
+//	  }
+//	  if m1.Month != m2.Month {
+//	    return m1.Month - m2.Month
+//	  }
+//	  return m1.Day - m2.Day
+//	}
 type Orderable[R any] interface {
-	Cmp(*R) int
-	*R
+	Cmp(R) int
+	//*R
 }
 
 // Len returns the number of elements in the heap.
@@ -105,9 +104,9 @@ func Push[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], elem T) {
 }
 
 // PushOrderable adds an element to the heap for a T that implements Orderable.
-func PushOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM], elem T) {
+func PushOrderable[T Orderable[T], MOM MinOrMax](heap *Heap[T, MOM], elem T) {
 	push(heap, elem, func(i, j int) int {
-		return PT(&heap.sl[i]).Cmp(&heap.sl[j])
+		return heap.sl[i].Cmp(heap.sl[j])
 	})
 }
 
@@ -124,9 +123,9 @@ func Pop[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM]) (T, bool) {
 
 // Pop removes the min/max element from the heap for a T that implements
 // Orderable.
-func PopOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM]) (T, bool) {
+func PopOrderable[T Orderable[T], MOM MinOrMax](heap *Heap[T, MOM]) (T, bool) {
 	return pop(heap, func(i, j int) int {
-		return PT(&heap.sl[i]).Cmp(&heap.sl[j])
+		return heap.sl[i].Cmp(heap.sl[j])
 	})
 }
 
@@ -198,9 +197,9 @@ func Filter[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (keepEleme
 
 // As for Filter, but for the case where T cannot be compared using < and there
 // is an implementation of Orderable[T].
-func FilterOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM], f func(*T) (keepElement bool, breakOrContinue BreakOrContinue)) {
+func FilterOrderable[T Orderable[T], MOM MinOrMax](heap *Heap[T, MOM], f func(*T) (keepElement bool, breakOrContinue BreakOrContinue)) {
 	filter(heap, f, func(i, j int) int {
-		return PT(&heap.sl[i]).Cmp(&heap.sl[j])
+		return heap.sl[i].Cmp(heap.sl[j])
 	})
 }
 
@@ -247,9 +246,9 @@ func FromSlice[T c.Ordered, MOM MinOrMax](heap *Heap[T, MOM], slice []T) {
 
 // As for FromSlice, but for the case where T cannot be compared using < and
 // there is an implementation of Orderable[T].
-func FromSliceOrderable[T any, MOM MinOrMax, PT Orderable[T]](heap *Heap[T, MOM], slice []T) {
+func FromSliceOrderable[T Orderable[T], MOM MinOrMax](heap *Heap[T, MOM], slice []T) {
 	fromSlice(heap, slice, func(i, j int) int {
-		return PT(&heap.sl[i]).Cmp(&heap.sl[j])
+		return heap.sl[i].Cmp(heap.sl[j])
 	})
 }
 
