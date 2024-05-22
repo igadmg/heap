@@ -90,7 +90,6 @@ func (Max) mul() int {
 //	}
 type Orderable[R any] interface {
 	Cmp(R) int
-	//*R
 }
 
 // Len returns the number of elements in the heap.
