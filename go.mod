@@ -4,5 +4,5 @@ go 1.22
 
 require (
 	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511
-	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
+	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
 )
