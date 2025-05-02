@@ -452,7 +452,7 @@ type myCustomType struct {
 	Content string
 }
 
-func (c1 *myCustomType) Cmp(c2 *myCustomType) int {
+func (c1 myCustomType) Cmp(c2 myCustomType) int {
 	return c1.Key - c2.Key
 }
 
@@ -567,7 +567,7 @@ type myOtherCustomType struct {
 	v int
 }
 
-func (a *myOtherCustomType) Cmp(b *myOtherCustomType) int {
+func (a myOtherCustomType) Cmp(b myOtherCustomType) int {
 	return a.v - b.v
 }
 
