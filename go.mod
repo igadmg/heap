@@ -1,4 +1,4 @@
-module github.com/igadmg/heap
+module github.com/Mishka-Squat/heap
 
 go 1.25.0
 
